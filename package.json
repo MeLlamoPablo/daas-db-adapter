@@ -1,0 +1,29 @@
+{
+	"name": "@daas/db-adapter",
+	"version": "0.0.1",
+	"description": "A Database abstraction layer for DaaS",
+	"main": "src/index.ts",
+	"scripts": {
+		"test:unit": "mocha --require ts-node/register test/index.ts --slow 500",
+		"test": "npm run test:unit",
+		"migrate": "ts-node src/migrations/migrate.ts",
+		"reformat": "prettier --write \"**/*.ts\""
+	},
+	"author": "Pablo Rodríguez <pabloviolin8@gmail.com>",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/chai": "^4.0.5",
+		"@types/knex": "0.0.65",
+		"@types/mocha": "^2.2.44",
+		"@types/node": "^8.0.53",
+		"chai": "^4.1.2",
+		"mocha": "^4.0.1",
+		"prettier": "^1.8.2",
+		"ts-node": "^3.3.0",
+		"typescript": "^2.6.1"
+	},
+	"dependencies": {
+		"knex": "^0.14.1",
+		"pg": "^7.4.0"
+	}
+}
