@@ -6,7 +6,7 @@ import { Bots } from "../../../src"
 import { assertRejects } from "../../util/assertRejects"
 
 export const botSuite = () =>
-	describe("Bots", () => {
+	describe("BotAdapter", () => {
 		describe("insert", () => {
 			it("should insert a bot", async () => {
 				const bot = await Bots.insert({
@@ -68,6 +68,36 @@ export const botSuite = () =>
 					.that.has.length(1)
 				expect(bots[0]).to.be.instanceof(Bot)
 				expect(bots[0].username).to.equal("hello2")
+			})
+		})
+		describe("findById", async () => {
+			it("should find a specific bot", async () => {
+				const bot = await Bots.findById(1)
+				expect(bot).not.to.be.null
+				expect(bot!.username).to.equal("hello")
+			})
+			it("should return null on non existing bots", async () => {
+				expect(await Bots.findById(100)).to.be.null
+			})
+		})
+		describe("update", async () => {
+			it("should update a bot", async () => {
+				const bot = await Bots.findById(1)
+				expect(bot).not.to.be.null
+				const updatedBot = await Bots.update(bot!, {
+					password: "newpass"
+				})
+				expect(updatedBot.password).to.equal("newpass")
+				// Make sure that the change is on DB and not just on memory
+				expect((await Bots.findById(1))!.password).to.equal("newpass")
+			})
+		})
+		describe("delete", async () => {
+			it("should delete a bot", async () => {
+				const bot = await Bots.findById(1)
+				expect(bot).not.to.be.null
+				await Bots.delete(bot!)
+				expect(await Bots.findById(1)).to.be.null
 			})
 		})
 	})

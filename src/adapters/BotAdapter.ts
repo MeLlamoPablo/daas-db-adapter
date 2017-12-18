@@ -1,8 +1,9 @@
 import { Bot } from "@daas/model"
 import { Adapter } from "./Adapter"
 import { CreateBotData } from "./definitions/CreateBotData"
+import { UpdateBotData } from "./definitions/UpdateBotData"
 
-export class BotsAdapter extends Adapter<Bot> {
+export class BotAdapter extends Adapter<Bot> {
 	protected readonly dbTable: string = "bots"
 	protected readonly dbColumns: Array<string> = [
 		"username",
@@ -17,27 +18,27 @@ export class BotsAdapter extends Adapter<Bot> {
 			row.id,
 			row.username,
 			row.password,
-			row.steam_guard_enabled
+			row.steamGuardEnabled
 		)
 
-		if (row.bot_status !== undefined) {
+		if (row.botStatus !== undefined) {
 			bot.status = row.botStatus
 		}
-		if (row.disabled_until !== undefined) {
-			bot.disabledUntil = row.disabled_until
+		if (row.disabledUntil !== undefined) {
+			bot.disabledUntil = row.disabledUntil
 		}
-		if (row.sentry_file !== undefined) {
-			bot.sentryFile = row.sentry_file
+		if (row.sentryFile !== undefined) {
+			bot.sentryFile = row.sentryFile
 		}
 
 		return bot
 	}
 
 	insert(data: CreateBotData): Promise<Bot> {
-		return super.insert({
-			username: data.username,
-			password: data.password,
-			steam_guard_enabled: data.steamGuardEnabled
-		})
+		return super.insert(data)
+	}
+
+	update(bot: Bot, data: UpdateBotData): Promise<Bot> {
+		return super.update(bot, data)
 	}
 }
