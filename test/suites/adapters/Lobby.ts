@@ -48,6 +48,7 @@ export const lobbySuite = () =>
 				const lobby = await Lobbies.findById(1)
 				expect(lobby).not.to.be.null
 				expect(lobby!.name).to.equal("Test lobby")
+				expect(lobby!.players).to.be.an("array").that.is.empty
 			})
 		})
 		describe("update", async () => {

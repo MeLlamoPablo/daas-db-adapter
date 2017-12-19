@@ -8,6 +8,10 @@ import { QueryBuilder } from "knex"
 import { JoinedData } from "./interfaces/JoinedData"
 import { JoinedColumn } from "./interfaces/JoinedColumn"
 
+const PRIMARY_KEYS: {[k: string]: string} = {
+	"lobby_players": "steam_id"
+}
+
 export abstract class Adapter<T extends Entity> {
 	protected abstract readonly dbTable: string
 	protected abstract readonly dbColumns: Array<string>
@@ -155,6 +159,13 @@ export abstract class Adapter<T extends Entity> {
 				})
 
 				return organizedRow
+					// Filter out the groups where we don't have the
+					// primary key. They mean that no records are present
+					// for that given table. i.e:
+					// lobby_id | lobby_name | player_steam_id | player_name
+					//     1    |    test    |       null      |     null
+					.filter(group =>
+						group.columns[PRIMARY_KEYS[group.table]] !== null)
 			})
 			.forEach(organizedRow => {
 				organizedRow.forEach(group => {
