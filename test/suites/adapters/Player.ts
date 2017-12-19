@@ -37,4 +37,15 @@ export const playerSuite = () =>
 				expect(players[1].steamId).to.equal("4321")
 			})
 		})
+		describe("LobbyAdapter#findById", () => {
+			it("shoul also find all players in the lobby", async () => {
+				const lobby = await Lobbies.findById(2)
+				const players = lobby!.players
+				expect(players)
+					.to.be.an("array")
+					.that.has.length(2)
+				expect(players[0].steamId).to.equal("1234")
+				expect(players[1].steamId).to.equal("4321")
+			})
+		})
 	})

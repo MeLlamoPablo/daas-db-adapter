@@ -4,7 +4,7 @@
 	"description": "A Database abstraction layer for DaaS",
 	"main": "src/index.ts",
 	"scripts": {
-		"test:integration": "mocha --require ts-node/register test/index.ts --slow 500",
+		"test:integration": "mocha --require ts-node/register $NODE_DEBUG_OPTION test/index.ts --slow 500",
 		"test": "npm run test:integration",
 		"migrate": "ts-node src/migrations/migrate.ts",
 		"reformat": "prettier --write \"**/*.ts\""

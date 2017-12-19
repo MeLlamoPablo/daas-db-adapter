@@ -3,15 +3,18 @@ import { Adapter } from "./Adapter"
 import { CreateBotData } from "./definitions/CreateBotData"
 import { UpdateBotData } from "./definitions/UpdateBotData"
 
+export const BOT_COLUMS = [
+	"username",
+	"password",
+	"steam_guard_enabled",
+	"disabled_until",
+	"sentry_file"
+]
+
 export class BotAdapter extends Adapter<Bot> {
-	protected readonly dbTable: string = "bots"
-	protected readonly dbColumns: Array<string> = [
-		"username",
-		"password",
-		"steam_guard_enabled",
-		"disabled_until",
-		"sentry_file"
-	]
+	protected readonly dbTable = "bots"
+	protected readonly dbColumns = BOT_COLUMS
+	protected readonly joins = []
 
 	protected mapDbResultToClass(row: any): Bot {
 		const bot = new Bot(

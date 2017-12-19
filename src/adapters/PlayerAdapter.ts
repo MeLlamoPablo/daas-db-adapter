@@ -4,13 +4,11 @@ import { objectToSnakeCase } from "../support/objectToSnakeCase"
 import { objectToCamelCase } from "../support/objectToCamelCase"
 import { UpdatePlayerData } from "./definitions/UpdatePlayerData"
 
+export const PLAYER_COLUMNS = ["steam_id", "is_ready", "is_captain"]
+
 export class PlayerAdapter {
 	protected readonly dbTable: string = "lobby_players"
-	protected readonly dbColumns: Array<string> = [
-		"steam_id",
-		"is_ready",
-		"is_captain"
-	]
+	protected readonly dbColumns: Array<string> = PLAYER_COLUMNS
 
 	private readonly lobby: Lobby
 
