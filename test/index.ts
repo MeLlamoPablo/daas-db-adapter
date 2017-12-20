@@ -5,6 +5,7 @@ import { up as migrationsUp, down as migrationsDown } from "../src/migrations"
 import { botSuite } from "./suites/adapters/Bot"
 import { lobbySuite } from "./suites/adapters/Lobby"
 import { playerSuite } from "./suites/adapters/Player"
+import { apiKeySuite } from "./suites/adapters/ApiKey"
 
 before(() => {
 	// Open the connection inside the test suite
@@ -29,6 +30,7 @@ describe("Database Adapters", () => {
 	botSuite()
 	lobbySuite()
 	playerSuite()
+	apiKeySuite()
 })
 
 describe("Migrations Down", () => {

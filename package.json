@@ -27,7 +27,9 @@
 	},
 	"dependencies": {
 		"@daas/model": "file:../daas-model",
+		"@types/bcrypt": "^1.0.0",
 		"@types/lodash": "^4.14.91",
+		"bcrypt": "^1.0.3",
 		"knex": "^0.14.1",
 		"lodash": "^4.17.4",
 		"pg": "^7.4.0"

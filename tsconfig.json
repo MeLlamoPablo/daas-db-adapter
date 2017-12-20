@@ -8,6 +8,6 @@
 		"target": "es5",
 		"lib": ["ES2015"],
 		"declaration": true,
-		"sourceMap": true
+		"inlineSourceMap": true
 	}
 }

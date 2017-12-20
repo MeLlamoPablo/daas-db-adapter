@@ -8,8 +8,8 @@ import { QueryBuilder } from "knex"
 import { JoinedData } from "./interfaces/JoinedData"
 import { JoinedColumn } from "./interfaces/JoinedColumn"
 
-const PRIMARY_KEYS: {[k: string]: string} = {
-	"lobby_players": "steam_id"
+const PRIMARY_KEYS: { [k: string]: string } = {
+	lobby_players: "steam_id"
 }
 
 export abstract class Adapter<T extends Entity> {
@@ -54,13 +54,17 @@ export abstract class Adapter<T extends Entity> {
 		return newQuery
 	}
 
-	protected abstract mapDbResultToClass(row: any, joins?: Array<JoinedData>): T
+	protected abstract mapDbResultToClass(
+		row: any,
+		joins?: Array<JoinedData>,
+		additionalData?: any
+	): T
 
-	async findById(id: number): Promise<T | null> {
+	protected async findByCondition(condition: any) {
 		let query = getDb()
 			.select(this.allColumns)
 			.from(this.dbTable)
-			.where(`${this.dbTable}.id`, id)
+			.where(condition)
 
 		query = this.withJoinsApplied(query)
 
@@ -79,6 +83,12 @@ export abstract class Adapter<T extends Entity> {
 		}
 	}
 
+	findById(id: number): Promise<T | null> {
+		const condition = {} as any
+		condition[`${this.dbTable}.id`] = id
+		return this.findByCondition(condition)
+	}
+
 	async findAll(limit?: number, offset: number = 0): Promise<Array<T>> {
 		let query = getDb()
 			.select(this.allCurrentTableColumns)
@@ -94,7 +104,7 @@ export abstract class Adapter<T extends Entity> {
 		return results.map(objectToCamelCase).map(it => this.mapDbResultToClass(it))
 	}
 
-	async insert(data: any): Promise<T> {
+	async insert(data: any, dataToReturn?: any): Promise<T> {
 		const [id] = await getDb()
 			.insert(objectToSnakeCase(data))
 			.into(this.dbTable)
@@ -102,17 +112,17 @@ export abstract class Adapter<T extends Entity> {
 
 		data.id = id
 
-		return this.mapDbResultToClass(objectToCamelCase(data))
+		return this.mapDbResultToClass(objectToCamelCase(data), [], dataToReturn)
 	}
 
-	async update(entity: T, difference: any): Promise<T> {
+	async update(entity: T, difference: any, dataToReturn?: any): Promise<T> {
 		const [updatedData] = await getDb()
 			.table(this.dbTable)
 			.update(objectToSnakeCase(difference))
 			.where({ id: entity.id })
 			.returning(this.allCurrentTableColumns)
 
-		return this.mapDbResultToClass(objectToSnakeCase(updatedData))
+		return this.mapDbResultToClass(objectToSnakeCase(updatedData), [], dataToReturn)
 	}
 
 	async delete(entity: T): Promise<void> {
@@ -158,14 +168,15 @@ export abstract class Adapter<T extends Entity> {
 					}
 				})
 
-				return organizedRow
-					// Filter out the groups where we don't have the
-					// primary key. They mean that no records are present
-					// for that given table. i.e:
-					// lobby_id | lobby_name | player_steam_id | player_name
-					//     1    |    test    |       null      |     null
-					.filter(group =>
-						group.columns[PRIMARY_KEYS[group.table]] !== null)
+				return (
+					organizedRow
+						// Filter out the groups where we don't have the
+						// primary key. They mean that no records are present
+						// for that given table. i.e:
+						// lobby_id | lobby_name | player_steam_id | player_name
+						//     1    |    test    |       null      |     null
+						.filter(group => group.columns[PRIMARY_KEYS[group.table]] !== null)
+				)
 			})
 			.forEach(organizedRow => {
 				organizedRow.forEach(group => {
