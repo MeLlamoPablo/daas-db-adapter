@@ -8,6 +8,7 @@
 		"test:coverage": "nyc --extension .ts --reporter html --reporter text npm run test:integration",
 		"test": "npm run test:coverage",
 		"migrate": "ts-node src/migrations/migrate.ts",
+		"build": "tsc",
 		"reformat": "prettier --write \"**/*.ts\""
 	},
 	"author": "Pablo Rodríguez <pabloviolin8@gmail.com>",

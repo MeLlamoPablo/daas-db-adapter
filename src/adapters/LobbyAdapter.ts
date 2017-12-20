@@ -7,7 +7,7 @@ import { JoinType } from "./enums/JoinType"
 import { JoinedData } from "./interfaces/JoinedData"
 import { generatePassword } from "../support/generatePassword"
 
-class LobbyConcernAdapter {
+export class LobbyConcernAdapter {
 	private readonly lobby: Lobby
 
 	constructor(lobby: Lobby) {

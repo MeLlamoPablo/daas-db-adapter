@@ -192,7 +192,10 @@ $RECYCLE.BIN/
 
 # End of https://www.gitignore.io/api/node,macos,linux,windows,webstorm
 
-# Generated files:
-*.d.ts
-*.js
-*.js.map
+### npmignore spcecific ###
+
+.idea
+.prettierrc.json
+tsconfig.json
+*.ts
+!*.d.ts

@@ -27,4 +27,5 @@ export function getDb(): Knex {
 	return db
 }
 
-export const closeDb = () => getDb().destroy()
+// async/await is needed here to convert Bluebird to Promise
+export const closeDb = async () => await getDb().destroy()
