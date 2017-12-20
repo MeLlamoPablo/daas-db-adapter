@@ -2,7 +2,7 @@ import "mocha"
 import { expect } from "chai"
 
 import { GameMode, LobbyStatus, Lobby, Server } from "@daas/model"
-import { Lobbies } from "../../../src"
+import { Lobbies } from "../../../index"
 
 export const lobbySuite = () =>
 	describe("LobbyAdapter", () => {
@@ -10,7 +10,6 @@ export const lobbySuite = () =>
 			it("should insert a lobby", async () => {
 				const lobby = await Lobbies.insert({
 					name: "Test lobby",
-					password: "password",
 					server: Server.LUXEMBOURG,
 					gameMode: GameMode.CAPTAINS_MODE,
 					teamAHasFirstPick: true
@@ -19,7 +18,7 @@ export const lobbySuite = () =>
 				expect(lobby).to.be.instanceof(Lobby)
 				expect(lobby.id).to.equal(1)
 				expect(lobby.name).to.equal("Test lobby")
-				expect(lobby.password).to.equal("password")
+				expect(lobby.password).to.be.a("string")
 				expect(lobby.server).to.equal(Server.LUXEMBOURG)
 				expect(lobby.gameMode).to.equal(GameMode.CAPTAINS_MODE)
 				expect(lobby.status).to.equal(LobbyStatus.CREATION_PENDING)
@@ -30,7 +29,6 @@ export const lobbySuite = () =>
 			it("should return all lobbies", async () => {
 				await Lobbies.insert({
 					name: "Test lobby 2",
-					password: "password",
 					server: Server.LUXEMBOURG,
 					gameMode: GameMode.CAPTAINS_MODE,
 					teamAHasFirstPick: true

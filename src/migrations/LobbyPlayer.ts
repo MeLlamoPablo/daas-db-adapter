@@ -13,7 +13,8 @@ export const migrateLobbyPlayers = () =>
 			.inTable("lobbies")
 			.onDelete("cascade")
 			.onUpdate("cascade")
-		table.boolean("is_ready").notNullable()
+		table.boolean("is_team_a").notNullable()
+		table.boolean("is_ready").notNullable().defaultTo(false)
 		table.boolean("is_captain").notNullable()
 
 		table.unique(["steam_id", "lobby_id"])

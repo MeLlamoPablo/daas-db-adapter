@@ -2,7 +2,7 @@ import "mocha"
 import { expect } from "chai"
 
 import { Bot, BotStatus } from "@daas/model"
-import { Bots } from "../../../src"
+import { Bots } from "../../../index"
 import { assertRejects } from "../../util/assertRejects"
 
 export const botSuite = () =>

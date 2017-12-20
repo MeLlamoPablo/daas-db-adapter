@@ -1,7 +1,7 @@
 import "mocha"
 import { expect } from "chai"
 
-import { Lobbies } from "../../../src"
+import { Lobbies } from "../../../index"
 import { PlayerAdapter } from "../../../src/adapters/PlayerAdapter"
 
 export const playerSuite = () =>
@@ -16,6 +16,7 @@ export const playerSuite = () =>
 			it("should insert a player into a lobby", async () => {
 				await Players.insert({
 					steamId: "1234",
+					isTeamA: true,
 					isCaptain: true,
 					isReady: false
 				})
@@ -25,6 +26,7 @@ export const playerSuite = () =>
 			it("should find all players in the lobby", async () => {
 				await Players.insert({
 					steamId: "4321",
+					isTeamA: true,
 					isCaptain: false,
 					isReady: false
 				})

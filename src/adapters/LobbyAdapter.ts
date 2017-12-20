@@ -5,6 +5,7 @@ import { UpdateLobbyData } from "./definitions/UpdateLobbyData"
 import { PLAYER_COLUMNS, PlayerAdapter } from "./PlayerAdapter"
 import { JoinType } from "./enums/JoinType"
 import { JoinedData } from "./interfaces/JoinedData"
+import { generatePassword } from "../support/generatePassword"
 
 class LobbyConcernAdapter {
 	private readonly lobby: Lobby
@@ -61,7 +62,10 @@ export class LobbyAdapter extends Adapter<Lobby> {
 	}
 
 	insert(data: CreateLobbyData): Promise<Lobby> {
-		return super.insert(data)
+		return super.insert({
+			...data,
+			password: generatePassword()
+		})
 	}
 
 	update(lobby: Lobby, data: UpdateLobbyData): Promise<Lobby> {
