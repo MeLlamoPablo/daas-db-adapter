@@ -4,6 +4,15 @@ import { expect } from "chai"
 import { ApiKey, ApiAccessLevel } from "@daas/model"
 import { ApiKeys } from "../../../"
 
+function testApiKeyProperties(key: ApiKey) {
+	expect(key.id).to.be.a("number").that.is.at.least(1)
+	expect(key.value).to.be.a("string")
+	expect(key.fragment).to.be.a("string").that.has.length(5)
+	expect(key.permissions).to.contain.keys(["bots", "lobbies", "apiKeys"])
+	expect(key.lastUsed).to.be.an.instanceOf(Date)
+	expect(key.lastUsed.getTime()).to.be.below(Date.now())
+}
+
 export const apiKeySuite = () =>
 	describe("BotAdapter", () => {
 		let key: ApiKey
@@ -18,22 +27,22 @@ export const apiKeySuite = () =>
 					}
 				})
 
-				expect(key.value).to.be.a("string")
+				testApiKeyProperties(key)
 				expect(key.fragment).to.equal(key.value.substr(0, 5))
-				expect(key.permissions).to.contain.keys(["bots", "lobbies", "apiKeys"])
-				expect(key.lastUsed).to.be.an.instanceOf(Date)
 			})
 		})
 		describe("findByFragment", async () => {
 			it("should find the created key", async () => {
 				const queriedKey = await ApiKeys.findByFragment(key.value.substr(0, 5))
 				expect(queriedKey).not.to.be.null
+				testApiKeyProperties(queriedKey!)
 			})
 		})
 		describe("findByPlainTextKey", async () => {
 			it("should find the created key", async () => {
 				const queriedKey = await ApiKeys.findByPlainTextKey(key.value)
 				expect(queriedKey).not.to.be.null
+				testApiKeyProperties(queriedKey!)
 			})
 			it("shouldn't find a key with an incorrect password", async () => {
 				const [queriedKey, queriedKey2] = await Promise.all([
@@ -50,6 +59,7 @@ export const apiKeySuite = () =>
 					label: "newlabel"
 				})
 				expect(updatedKey.label).to.equal("newlabel")
+				testApiKeyProperties(updatedKey)
 				// Make sure that the change is on DB and not just on memory
 				expect((await ApiKeys.findById(1))!.label).to.equal("newlabel")
 			})

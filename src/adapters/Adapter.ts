@@ -116,6 +116,10 @@ export abstract class Adapter<T extends Entity> {
 	}
 
 	async update(entity: T, difference: any, dataToReturn?: any): Promise<T> {
+		if (Object.keys(difference).length === 0) {
+			return entity
+		}
+
 		const [updatedData] = await getDb()
 			.table(this.dbTable)
 			.update(objectToSnakeCase(difference))
@@ -123,7 +127,7 @@ export abstract class Adapter<T extends Entity> {
 			.returning(this.allCurrentTableColumns)
 
 		return this.mapDbResultToClass(
-			objectToSnakeCase(updatedData),
+			objectToCamelCase(updatedData),
 			[],
 			dataToReturn
 		)
