@@ -1,5 +1,5 @@
 import { ApiKey } from "@daas/model"
-import { compare , hash } from "bcrypt"
+import { compare, hash } from "bcrypt"
 import { generateApiKey } from "../support/generateApiKey"
 import { Adapter } from "./Adapter"
 import { CreateApiKeyData } from "./definitions/CreateApiKeyData"
@@ -34,11 +34,15 @@ export class ApiKeyAdapter extends Adapter<ApiKey> {
 		)
 	}
 
+	findByFragment(fragment: string): Promise<ApiKey | null> {
+		return super.findByCondition({ fragment })
+	}
+
 	async findByPlainTextKey(plainText: string): Promise<ApiKey | null> {
 		const fragment = plainText.substr(0, 5)
 		const key = await super.findByCondition({ fragment })
 
-		if (key && await this.verifyMatches(key, plainText)) {
+		if (key && (await this.verifyMatches(key, plainText))) {
 			return key
 		} else {
 			return null
@@ -74,7 +78,10 @@ export class ApiKeyAdapter extends Adapter<ApiKey> {
 	 * @param keyToCompare The plain text key sent by the client
 	 * @returns True if they match, false otherwise
 	 */
-	private async verifyMatches(key: ApiKey, keyToCompare: string): Promise<boolean> {
+	private async verifyMatches(
+		key: ApiKey,
+		keyToCompare: string
+	): Promise<boolean> {
 		return await compare(keyToCompare, key.value)
 	}
 }

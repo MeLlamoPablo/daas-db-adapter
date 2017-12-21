@@ -24,6 +24,12 @@ export const apiKeySuite = () =>
 				expect(key.lastUsed).to.be.an.instanceOf(Date)
 			})
 		})
+		describe("findByFragment", async () => {
+			it("should find the created key", async () => {
+				const queriedKey = await ApiKeys.findByFragment(key.value.substr(0, 5))
+				expect(queriedKey).not.to.be.null
+			})
+		})
 		describe("findByPlainTextKey", async () => {
 			it("should find the created key", async () => {
 				const queriedKey = await ApiKeys.findByPlainTextKey(key.value)

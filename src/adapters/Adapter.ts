@@ -122,7 +122,11 @@ export abstract class Adapter<T extends Entity> {
 			.where({ id: entity.id })
 			.returning(this.allCurrentTableColumns)
 
-		return this.mapDbResultToClass(objectToSnakeCase(updatedData), [], dataToReturn)
+		return this.mapDbResultToClass(
+			objectToSnakeCase(updatedData),
+			[],
+			dataToReturn
+		)
 	}
 
 	async delete(entity: T): Promise<void> {
