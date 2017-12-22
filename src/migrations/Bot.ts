@@ -11,7 +11,6 @@ export const migrateBots = () =>
 			.notNullable()
 			.unique()
 		table.string("password").notNullable()
-		table.boolean("steam_guard_enabled").notNullable()
 		table
 			.integer("status")
 			.notNullable()

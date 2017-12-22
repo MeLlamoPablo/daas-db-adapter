@@ -6,7 +6,7 @@ import { UpdatePlayerData } from "./definitions/UpdatePlayerData"
 
 export const PLAYER_COLUMNS = [
 	"steam_id",
-	"is_team_a",
+	"is_radiant",
 	"is_ready",
 	"is_captain"
 ]

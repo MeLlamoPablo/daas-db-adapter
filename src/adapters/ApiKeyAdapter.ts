@@ -1,7 +1,7 @@
 import { ApiKey } from "@daas/model"
 import { compare, hash } from "bcrypt"
 import { generateApiKey } from "../support/generateApiKey"
-import { Adapter } from "./Adapter"
+import { EntityAdapter } from "./EntityAdapter"
 import { CreateApiKeyData } from "./definitions/CreateApiKeyData"
 import { JoinedData } from "./interfaces/JoinedData"
 import { UpdateApiKeyData } from "./definitions/UpdateApiKeyData"
@@ -14,7 +14,7 @@ export const API_KEY_COLUMNS = [
 	"last_used"
 ]
 
-export class ApiKeyAdapter extends Adapter<ApiKey> {
+export class ApiKeyAdapter extends EntityAdapter<ApiKey> {
 	protected readonly dbTable = "api_keys"
 	protected readonly dbColumns = API_KEY_COLUMNS
 	protected readonly joins = []

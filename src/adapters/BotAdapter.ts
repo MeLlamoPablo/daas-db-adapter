@@ -1,17 +1,16 @@
 import { Bot } from "@daas/model"
-import { Adapter } from "./Adapter"
+import { EntityAdapter } from "./EntityAdapter"
 import { CreateBotData } from "./definitions/CreateBotData"
 import { UpdateBotData } from "./definitions/UpdateBotData"
 
 export const BOT_COLUMS = [
 	"username",
 	"password",
-	"steam_guard_enabled",
 	"disabled_until",
 	"sentry_file"
 ]
 
-export class BotAdapter extends Adapter<Bot> {
+export class BotAdapter extends EntityAdapter<Bot> {
 	protected readonly dbTable = "bots"
 	protected readonly dbColumns = BOT_COLUMS
 	protected readonly joins = []
@@ -21,7 +20,7 @@ export class BotAdapter extends Adapter<Bot> {
 			row.id,
 			row.username,
 			row.password,
-			row.steamGuardEnabled
+			row.sentryFile || null
 		)
 
 		if (row.botStatus !== undefined) {
@@ -29,9 +28,6 @@ export class BotAdapter extends Adapter<Bot> {
 		}
 		if (row.disabledUntil !== undefined) {
 			bot.disabledUntil = row.disabledUntil
-		}
-		if (row.sentryFile !== undefined) {
-			bot.sentryFile = row.sentryFile
 		}
 
 		return bot

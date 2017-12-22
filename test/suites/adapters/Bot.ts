@@ -12,14 +12,14 @@ export const botSuite = () =>
 				const bot = await Bots.insert({
 					username: "hello",
 					password: "world",
-					steamGuardEnabled: false
+					sentryFile: null
 				})
 
 				expect(bot).to.be.instanceof(Bot)
 				expect(bot.id).to.equal(1)
 				expect(bot.username).to.equal("hello")
 				expect(bot.password).to.equal("world")
-				expect(bot.steamGuardEnabled).to.be.false
+				expect(bot.sentryFile).to.be.null
 				expect(bot.status).to.equal(BotStatus.OFFLINE)
 				expect(bot.sentryFile).to.be.null
 				expect(bot.disabledUntil).to.be.null
@@ -29,7 +29,7 @@ export const botSuite = () =>
 					Bots.insert({
 						username: "hello",
 						password: "world",
-						steamGuardEnabled: false
+						sentryFile: null
 					})
 				)
 			})
@@ -40,12 +40,12 @@ export const botSuite = () =>
 					Bots.insert({
 						username: "hello2",
 						password: "world",
-						steamGuardEnabled: false
+						sentryFile: null
 					}),
 					Bots.insert({
 						username: "hello3",
 						password: "world",
-						steamGuardEnabled: false
+						sentryFile: null
 					})
 				])
 

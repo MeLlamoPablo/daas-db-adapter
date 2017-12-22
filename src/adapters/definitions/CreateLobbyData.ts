@@ -4,6 +4,6 @@ export interface CreateLobbyData {
 	name: string
 	server: Server
 	gameMode: GameMode
-	teamAHasFirstPick: boolean
+	radiantHasFirstPick: boolean
 	status?: LobbyStatus
 }

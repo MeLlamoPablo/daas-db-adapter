@@ -1,5 +1,5 @@
 import { Lobby } from "@daas/model"
-import { Adapter } from "./Adapter"
+import { EntityAdapter } from "./EntityAdapter"
 import { CreateLobbyData } from "./definitions/CreateLobbyData"
 import { UpdateLobbyData } from "./definitions/UpdateLobbyData"
 import { PLAYER_COLUMNS, PlayerAdapter } from "./PlayerAdapter"
@@ -24,11 +24,11 @@ export const LOBBY_COLUMNS = [
 	"password",
 	"server",
 	"game_mode",
-	"team_a_has_first_pick",
+	"radiant_has_first_pick",
 	"status"
 ]
 
-export class LobbyAdapter extends Adapter<Lobby> {
+export class LobbyAdapter extends EntityAdapter<Lobby> {
 	protected readonly dbTable: string = "lobbies"
 	protected readonly dbColumns: Array<string> = LOBBY_COLUMNS
 	protected readonly joins = [
@@ -49,7 +49,7 @@ export class LobbyAdapter extends Adapter<Lobby> {
 			row.password,
 			row.server,
 			row.gameMode,
-			row.teamAHasFirstPick
+			row.radiantHasFirstPick
 		)
 
 		const playersJoin = joins.find(it => it.table === "lobby_players")

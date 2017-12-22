@@ -13,7 +13,7 @@ export const migrateLobbyPlayers = () =>
 			.inTable("lobbies")
 			.onDelete("cascade")
 			.onUpdate("cascade")
-		table.boolean("is_team_a").notNullable()
+		table.boolean("is_radiant").notNullable()
 		table
 			.boolean("is_ready")
 			.notNullable()

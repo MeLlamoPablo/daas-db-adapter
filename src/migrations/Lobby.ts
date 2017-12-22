@@ -10,7 +10,7 @@ export const migrateLobbies = () =>
 		table.string("password").notNullable()
 		table.integer("server").notNullable()
 		table.integer("game_mode").notNullable()
-		table.boolean("team_a_has_first_pick").notNullable()
+		table.boolean("radiant_has_first_pick").notNullable()
 		table
 			.integer("status")
 			.notNullable()

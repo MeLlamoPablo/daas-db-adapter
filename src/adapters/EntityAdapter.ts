@@ -12,7 +12,7 @@ const PRIMARY_KEYS: { [k: string]: string } = {
 	lobby_players: "steam_id"
 }
 
-export abstract class Adapter<T extends Entity> {
+export abstract class EntityAdapter<T extends Entity> {
 	protected abstract readonly dbTable: string
 	protected abstract readonly dbColumns: Array<string>
 	protected abstract readonly joins: Array<Join> = []
@@ -74,8 +74,8 @@ export abstract class Adapter<T extends Entity> {
 			return null
 		} else {
 			return this.mapDbResultToClass(
-				objectToCamelCase(Adapter.getMainTableColumnsFromDbResult(rows)),
-				Adapter.getJoinedTableColumnsFromDbResult(rows).map(it => ({
+				objectToCamelCase(EntityAdapter.getMainTableColumnsFromDbResult(rows)),
+				EntityAdapter.getJoinedTableColumnsFromDbResult(rows).map(it => ({
 					table: it.table,
 					rows: it.rows.map(objectToCamelCase)
 				}))
@@ -144,7 +144,7 @@ export abstract class Adapter<T extends Entity> {
 		const result = {} as any
 		Object.keys(dbResult[0])
 			// Keep the ones that are not joined columns
-			.filter(it => Adapter.getJoinedColumnTableAndName(it) === null)
+			.filter(it => EntityAdapter.getJoinedColumnTableAndName(it) === null)
 			.forEach(it => (result[it] = dbResult[0][it]))
 
 		return result
@@ -160,7 +160,7 @@ export abstract class Adapter<T extends Entity> {
 				const organizedRow: Array<{ table: string; columns: any }> = []
 				const joinedColumns = Object.keys(dbRow)
 					// Keep the ones that are joined columns
-					.map(it => Adapter.getJoinedColumnTableAndName(it))
+					.map(it => EntityAdapter.getJoinedColumnTableAndName(it))
 					.filter(it => it) as Array<JoinedColumn>
 
 				joinedColumns.forEach(({ table, column }) => {

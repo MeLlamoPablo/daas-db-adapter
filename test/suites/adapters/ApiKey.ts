@@ -5,16 +5,20 @@ import { ApiKey, ApiAccessLevel } from "@daas/model"
 import { ApiKeys } from "../../../"
 
 function testApiKeyProperties(key: ApiKey) {
-	expect(key.id).to.be.a("number").that.is.at.least(1)
+	expect(key.id)
+		.to.be.a("number")
+		.that.is.at.least(1)
 	expect(key.value).to.be.a("string")
-	expect(key.fragment).to.be.a("string").that.has.length(5)
+	expect(key.fragment)
+		.to.be.a("string")
+		.that.has.length(5)
 	expect(key.permissions).to.contain.keys(["bots", "lobbies", "apiKeys"])
 	expect(key.lastUsed).to.be.an.instanceOf(Date)
 	expect(key.lastUsed.getTime()).to.be.below(Date.now())
 }
 
 export const apiKeySuite = () =>
-	describe("BotAdapter", () => {
+	describe("ApiKeyAdapter", () => {
 		let key: ApiKey
 		describe("insert", () => {
 			it("should insert an api key", async () => {

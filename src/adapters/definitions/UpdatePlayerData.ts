@@ -1,5 +1,5 @@
 export interface UpdatePlayerData {
-	isTeamA?: boolean
+	isRadiant?: boolean
 	isReady?: boolean
 	isCaptain?: boolean
 }

@@ -12,7 +12,7 @@ export const lobbySuite = () =>
 					name: "Test lobby",
 					server: Server.LUXEMBOURG,
 					gameMode: GameMode.CAPTAINS_MODE,
-					teamAHasFirstPick: true
+					radiantHasFirstPick: true
 				})
 
 				expect(lobby).to.be.instanceof(Lobby)
@@ -22,7 +22,7 @@ export const lobbySuite = () =>
 				expect(lobby.server).to.equal(Server.LUXEMBOURG)
 				expect(lobby.gameMode).to.equal(GameMode.CAPTAINS_MODE)
 				expect(lobby.status).to.equal(LobbyStatus.CREATION_PENDING)
-				expect(lobby.teamAHasFirstPick).to.be.true
+				expect(lobby.radiantHasFirstPick).to.be.true
 			})
 		})
 		describe("findAll", () => {
@@ -31,7 +31,7 @@ export const lobbySuite = () =>
 					name: "Test lobby 2",
 					server: Server.LUXEMBOURG,
 					gameMode: GameMode.CAPTAINS_MODE,
-					teamAHasFirstPick: true
+					radiantHasFirstPick: true
 				})
 
 				const lobbies = await Lobbies.findAll()

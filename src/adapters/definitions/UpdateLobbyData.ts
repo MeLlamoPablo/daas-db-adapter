@@ -5,6 +5,6 @@ export interface UpdateLobbyData {
 	password?: string
 	server?: Server
 	gameMode?: GameMode
-	teamAHasFirstPick?: boolean
+	radiantHasFirstPick?: boolean
 	status?: LobbyStatus
 }
