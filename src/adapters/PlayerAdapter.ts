@@ -27,7 +27,8 @@ export class PlayerAdapter {
 			.from(this.dbTable)
 			.where({
 				lobby_id: this.lobby.id
-			})) as any[]).map(it => objectToCamelCase(it))
+			})
+			.orderBy("id", "asc")) as any[]).map(it => objectToCamelCase(it))
 	}
 
 	async insert(data: Player): Promise<Player> {
@@ -41,13 +42,14 @@ export class PlayerAdapter {
 		return data
 	}
 
-	async update(data: UpdatePlayerData): Promise<Player> {
+	async update(player: Player, data: UpdatePlayerData): Promise<Player> {
 		const [updatedData] = await getDb()
-			.update({
-				lobby_id: this.lobby.id,
-				...objectToSnakeCase(data)
-			})
+			.update(objectToSnakeCase(data))
 			.table(this.dbTable)
+			.where({
+				lobby_id: this.lobby.id,
+				steam_id: player.steamId
+			})
 			.returning(this.dbColumns)
 
 		return objectToCamelCase(updatedData)

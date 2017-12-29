@@ -2,8 +2,8 @@ import { LobbyStatus } from "@daas/model"
 import { getDb } from "../connect"
 import { id } from "./util/id"
 
-export const migrateLobbies = () =>
-	getDb().schema.createTable("lobbies", table => {
+export const migrateLobbies = async () =>
+	await getDb().schema.createTable("lobbies", table => {
 		id(table)
 
 		table.string("name").notNullable()

@@ -8,6 +8,7 @@ import { playerSuite } from "./suites/adapters/Player"
 import { apiKeySuite } from "./suites/adapters/ApiKey"
 import { pubSubSuite } from "./suites/adapters/PubSub"
 import { configSuite } from "./suites/adapters/Config"
+import { transactionSuite } from "./suites/transactions"
 
 before(() => {
 	// Open the connection inside the test suite
@@ -35,6 +36,7 @@ describe("Database Adapters", () => {
 	apiKeySuite()
 	configSuite()
 	pubSubSuite()
+	transactionSuite()
 })
 
 describe("Migrations Down", () => {

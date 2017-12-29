@@ -11,4 +11,3 @@ export const migrateConfig = async () => {
 		})
 		.into("config")
 }
-

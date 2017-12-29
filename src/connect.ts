@@ -8,6 +8,7 @@ export function getDb(): Knex {
 		return db
 	}
 
+	// istanbul ignore if
 	if (!process.env.DATABASE_URL) {
 		throw new Error(
 			"Cannot connect to the db because the DATABASE_URL" +
@@ -16,6 +17,7 @@ export function getDb(): Knex {
 	}
 
 	let connStr = process.env.DATABASE_URL!
+	// istanbul ignore next
 	if (process.env.DATABASE_SSL === "true" && !connStr.includes("ssl=true")) {
 		connStr += "?ssl=true"
 	}

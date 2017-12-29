@@ -2,11 +2,16 @@ import "mocha"
 import { expect } from "chai"
 
 import { Bot, BotStatus } from "@daas/model"
-import { Bots } from "../../../index"
+import { Bots as getBotsAdapter } from "../../../index"
 import { assertRejects } from "../../util/assertRejects"
+import { BotAdapter } from "../../../src/adapters/BotAdapter"
 
 export const botSuite = () =>
-	describe("BotAdapter", () => {
+	describe("BotAdapter", async () => {
+		let Bots: BotAdapter
+		before(async () => {
+			Bots = await getBotsAdapter()
+		})
 		describe("insert", () => {
 			it("should insert a bot", async () => {
 				const bot = await Bots.insert({

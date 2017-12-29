@@ -1,4 +1,4 @@
-import { CreateTableBuilder } from "knex"
+import { CreateTableBuilder, ColumnBuilder } from "knex"
 
 export const id = (table: CreateTableBuilder) =>
-	table.increments("id").primary()
+	table.increments("id").primary() as ColumnBuilder

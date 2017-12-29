@@ -1,8 +1,8 @@
 import { getDb } from "../connect"
 import { id } from "./util/id"
 
-export const migrateLobbyPlayers = () =>
-	getDb().schema.createTable("lobby_players", table => {
+export const migrateLobbyPlayers = async () =>
+	await getDb().schema.createTable("lobby_players", table => {
 		id(table)
 
 		table.string("steam_id").notNullable()

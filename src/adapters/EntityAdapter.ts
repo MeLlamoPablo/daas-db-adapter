@@ -1,12 +1,13 @@
 import { Entity } from "@daas/model"
-import { getDb } from "../connect"
+import { QueryBuilder } from "knex"
 import { objectToSnakeCase } from "../support/objectToSnakeCase"
 import { objectToCamelCase } from "../support/objectToCamelCase"
 import { Join } from "./interfaces/Join"
 import { JoinType } from "./enums/JoinType"
-import { QueryBuilder } from "knex"
 import { JoinedData } from "./interfaces/JoinedData"
 import { JoinedColumn } from "./interfaces/JoinedColumn"
+import { Db } from "./types/db"
+import { isTransaction } from "../support/isTransaction"
 
 const PRIMARY_KEYS: { [k: string]: string } = {
 	lobby_players: "steam_id"
@@ -16,6 +17,12 @@ export abstract class EntityAdapter<T extends Entity> {
 	protected abstract readonly dbTable: string
 	protected abstract readonly dbColumns: Array<string>
 	protected abstract readonly joins: Array<Join> = []
+
+	protected readonly db: Db
+
+	constructor(db: Db) {
+		this.db = db
+	}
 
 	private get allCurrentTableColumns() {
 		return this.dbColumns.concat("id")
@@ -61,14 +68,16 @@ export abstract class EntityAdapter<T extends Entity> {
 	): T
 
 	protected async findByCondition(condition: any) {
-		let query = getDb()
-			.select(this.allColumns)
-			.from(this.dbTable)
-			.where(condition)
+		const rows = await this.execQuery(db => {
+			let query = db
+				.select(this.allColumns)
+				.from(this.dbTable)
+				.where(condition)
 
-		query = this.withJoinsApplied(query)
+			query = this.withJoinsApplied(query)
 
-		const rows = await query
+			return query
+		})
 
 		if (rows.length === 0) {
 			return null
@@ -90,25 +99,28 @@ export abstract class EntityAdapter<T extends Entity> {
 	}
 
 	async findAll(limit?: number, offset: number = 0): Promise<Array<T>> {
-		let query = getDb()
-			.select(this.allCurrentTableColumns)
-			.from(this.dbTable)
+		const results = await this.execQuery(db => {
+			let query = db.select(this.allCurrentTableColumns).from(this.dbTable)
 
-		if (typeof limit !== "undefined") {
-			query = query.limit(limit)
-		}
+			if (typeof limit !== "undefined") {
+				query = query.limit(limit)
+			}
 
-		query = query.offset(offset)
+			query = query.offset(offset)
 
-		const results = (await query) as Array<any>
+			return query
+		})
+
 		return results.map(objectToCamelCase).map(it => this.mapDbResultToClass(it))
 	}
 
 	async insert(data: any, dataToReturn?: any): Promise<T> {
-		const [id] = await getDb()
-			.insert(objectToSnakeCase(data))
-			.into(this.dbTable)
-			.returning("id")
+		const [id] = await this.execQuery(db =>
+			db
+				.insert(objectToSnakeCase(data))
+				.into(this.dbTable)
+				.returning("id")
+		)
 
 		data.id = id
 
@@ -120,11 +132,13 @@ export abstract class EntityAdapter<T extends Entity> {
 			return entity
 		}
 
-		const [updatedData] = await getDb()
-			.table(this.dbTable)
-			.update(objectToSnakeCase(difference))
-			.where({ id: entity.id })
-			.returning(this.allCurrentTableColumns)
+		const [updatedData] = await this.execQuery(db =>
+			db
+				.table(this.dbTable)
+				.update(objectToSnakeCase(difference))
+				.where({ id: entity.id })
+				.returning(this.allCurrentTableColumns)
+		)
 
 		return this.mapDbResultToClass(
 			objectToCamelCase(updatedData),
@@ -134,10 +148,35 @@ export abstract class EntityAdapter<T extends Entity> {
 	}
 
 	async delete(entity: T): Promise<void> {
-		await getDb()
-			.delete()
-			.from(this.dbTable)
-			.where({ id: entity.id })
+		await this.execQuery(db =>
+			db
+				.delete()
+				.from(this.dbTable)
+				.where({ id: entity.id })
+		)
+	}
+
+	async commit(): Promise<void> {
+		if (isTransaction(this.db)) {
+			await this.db.commit()
+		}
+	}
+
+	async rollback(e?: Error): Promise<void> {
+		if (isTransaction(this.db)) {
+			await this.db.rollback(e)
+		}
+	}
+
+	private async execQuery(
+		query: (db: Db) => QueryBuilder
+	): Promise<Array<any>> {
+		try {
+			return await query(this.db)
+		} catch (e) {
+			await this.rollback(e)
+			throw e
+		}
 	}
 
 	private static getMainTableColumnsFromDbResult(dbResult: Array<any>): any {

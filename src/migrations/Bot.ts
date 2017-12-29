@@ -2,8 +2,8 @@ import { BotStatus } from "@daas/model"
 import { getDb } from "../connect"
 import { id } from "./util/id"
 
-export const migrateBots = () =>
-	getDb().schema.createTable("bots", table => {
+export const migrateBots = async () =>
+	await getDb().schema.createTable("bots", table => {
 		id(table)
 
 		table

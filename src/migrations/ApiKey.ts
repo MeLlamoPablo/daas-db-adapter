@@ -1,8 +1,8 @@
 import { getDb } from "../connect"
 import { id } from "./util/id"
 
-export const migrateApiKeys = () =>
-	getDb().schema.createTable("api_keys", table => {
+export const migrateApiKeys = async () =>
+	await getDb().schema.createTable("api_keys", table => {
 		id(table)
 
 		table.string("label").notNullable()

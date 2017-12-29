@@ -1,12 +1,10 @@
-import {Config} from "@daas/model"
+import { Config } from "@daas/model"
 import { getDb } from "../connect"
 import { UpdateConfigData } from "./definitions/UpdateConfigData"
 import { objectToCamelCase } from "../support/objectToCamelCase"
 import { objectToSnakeCase } from "../support/objectToSnakeCase"
 
-export const CONFIG_COLUMS = [
-	"league_id"
-]
+export const CONFIG_COLUMS = ["league_id"]
 
 export class ConfigAdapter {
 	async get(): Promise<Config> {
