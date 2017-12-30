@@ -2,15 +2,10 @@ import "mocha"
 import { expect } from "chai"
 
 import { GameMode, LobbyStatus, Lobby, Server } from "@daas/model"
-import { Lobbies as getLobbiesAdapter } from "../../.."
-import { LobbyAdapter } from "../../../src/adapters/LobbyAdapter"
+import { Lobbies } from "../../.."
 
 export const lobbySuite = () =>
 	describe("LobbyAdapter", async () => {
-		let Lobbies: LobbyAdapter
-		before(async () => {
-			Lobbies = await getLobbiesAdapter()
-		})
 		describe("insert", () => {
 			it("should insert a lobby", async () => {
 				const lobby = await Lobbies.insert({

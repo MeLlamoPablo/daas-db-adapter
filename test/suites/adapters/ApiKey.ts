@@ -2,8 +2,7 @@ import "mocha"
 import { expect } from "chai"
 
 import { ApiKey, ApiAccessLevel } from "@daas/model"
-import { ApiKeys as getApiKeysAdapter } from "../../../"
-import { ApiKeyAdapter } from "../../../src/adapters/ApiKeyAdapter"
+import { ApiKeys } from "../../../"
 
 function testApiKeyProperties(key: ApiKey) {
 	expect(key.id)
@@ -20,10 +19,7 @@ function testApiKeyProperties(key: ApiKey) {
 
 export const apiKeySuite = () =>
 	describe("ApiKeyAdapter", async () => {
-		let ApiKeys: ApiKeyAdapter, key: ApiKey
-		before(async () => {
-			ApiKeys = await getApiKeysAdapter()
-		})
+		let key: ApiKey
 		describe("insert", () => {
 			it("should insert an api key", async () => {
 				key = await ApiKeys.insert({

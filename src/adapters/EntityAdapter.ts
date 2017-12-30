@@ -8,6 +8,7 @@ import { JoinedData } from "./interfaces/JoinedData"
 import { JoinedColumn } from "./interfaces/JoinedColumn"
 import { Db } from "./types/db"
 import { isTransaction } from "../support/isTransaction"
+import { Query } from "./types/Query"
 
 const PRIMARY_KEYS: { [k: string]: string } = {
 	lobby_players: "steam_id"
@@ -168,9 +169,7 @@ export abstract class EntityAdapter<T extends Entity> {
 		}
 	}
 
-	private async execQuery(
-		query: (db: Db) => QueryBuilder
-	): Promise<Array<any>> {
+	protected async execQuery(query: Query): Promise<Array<any>> {
 		try {
 			return await query(this.db)
 		} catch (e) {

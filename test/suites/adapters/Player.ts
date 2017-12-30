@@ -1,15 +1,13 @@
 import "mocha"
 import { expect } from "chai"
 
-import { Lobbies as getLobbiesAdapter } from "../../.."
+import { Lobbies } from "../../.."
 import { PlayerAdapter } from "../../../src/adapters/PlayerAdapter"
-import { LobbyAdapter } from "../../../src/adapters/LobbyAdapter"
 
 export const playerSuite = () =>
 	describe("PlayerAdapter", async () => {
-		let Lobbies: LobbyAdapter, Players: PlayerAdapter
+		let Players: PlayerAdapter
 		before(async () => {
-			Lobbies = await getLobbiesAdapter()
 			const lobby = await Lobbies.findById(2)
 			expect(lobby).not.to.be.null
 			Players = Lobbies.concerning(lobby!).Players

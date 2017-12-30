@@ -1,17 +1,12 @@
 import "mocha"
 import { expect } from "chai"
 
-import { PubSub as getPubSubAdapter } from "../../.."
-import { PubSubAdapter } from "../../../src/adapters/PubSubAdapter"
+import { PubSub } from "../../.."
 
 export const pubSubSuite = () =>
-	describe("PubSub", async () => {
-		let PubSub: PubSubAdapter,
-			unsubscribe: () => Promise<void>,
+	describe("getPubSubAdapter", async () => {
+		let	unsubscribe: () => Promise<void>,
 			lastMessage: any
-		before(async () => {
-			PubSub = await getPubSubAdapter()
-		})
 		it("should notify successfully", async () => {
 			unsubscribe = await PubSub.listen("test", msg => {
 				lastMessage = msg

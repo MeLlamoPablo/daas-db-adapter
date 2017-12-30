@@ -1,15 +1,10 @@
 import "mocha"
 import { expect } from "chai"
 
-import { Config as getConfigAdapter } from "../../.."
-import { ConfigAdapter } from "../../../src/adapters/ConfigAdapter"
+import { Config } from "../../.."
 
 export const configSuite = () =>
-	describe("Config", async () => {
-		let Config: ConfigAdapter
-		before(async () => {
-			Config = await getConfigAdapter()
-		})
+	describe("getConfigAdapter", async () => {
 		it("should select the config successfully", async () => {
 			const config = await Config.get()
 			expect(config).to.be.an("object")

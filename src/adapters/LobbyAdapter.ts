@@ -6,16 +6,19 @@ import { PLAYER_COLUMNS, PlayerAdapter } from "./PlayerAdapter"
 import { JoinType } from "./enums/JoinType"
 import { JoinedData } from "./interfaces/JoinedData"
 import { generatePassword } from "../support/generatePassword"
+import { ExecQueryFunction } from "./types/ExecQueryFunction"
 
 export class LobbyConcernAdapter {
+	private readonly execQuery: ExecQueryFunction
 	private readonly lobby: Lobby
 
-	constructor(lobby: Lobby) {
+	constructor(execQuery: ExecQueryFunction, lobby: Lobby) {
+		this.execQuery = execQuery
 		this.lobby = lobby
 	}
 
 	get Players() {
-		return new PlayerAdapter(this.lobby)
+		return new PlayerAdapter(this.execQuery, this.lobby)
 	}
 }
 
@@ -73,6 +76,6 @@ export class LobbyAdapter extends EntityAdapter<Lobby> {
 	}
 
 	concerning(lobby: Lobby): LobbyConcernAdapter {
-		return new LobbyConcernAdapter(lobby)
+		return new LobbyConcernAdapter(super.execQuery.bind(this), lobby)
 	}
 }

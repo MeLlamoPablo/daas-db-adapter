@@ -1,14 +1,30 @@
 import { ApiKeyAdapter } from "./src/adapters/ApiKeyAdapter"
 import { BotAdapter } from "./src/adapters/BotAdapter"
 import { LobbyAdapter } from "./src/adapters/LobbyAdapter"
-import { ConfigAdapter } from "./src/adapters/ConfigAdapter"
-import { PubSubAdapter } from "./src/adapters/PubSubAdapter"
+import { ConfigAdapter as RawConfigAdapter } from "./src/adapters/ConfigAdapter"
+import { PubSubAdapter as RawPubSubAdapter } from "./src/adapters/PubSubAdapter"
 import { getAdapter } from "./src/support/getAdapter"
 
-export const ApiKeys = (t: boolean = false) => getAdapter(ApiKeyAdapter, t)
-export const Bots = (t: boolean = false) => getAdapter(BotAdapter, t)
-export const Lobbies = (t: boolean = false) => getAdapter(LobbyAdapter, t)
-export const Config = async () => new ConfigAdapter()
-export const PubSub = async () => new PubSubAdapter()
+export const getApiKeysAdapter = (t: boolean = false) => getAdapter(ApiKeyAdapter, t)
+export const getBotsAdapter = (t: boolean = false) => getAdapter(BotAdapter, t)
+export const getLobbiesAdapter = (t: boolean = false) => getAdapter(LobbyAdapter, t)
+export const getConfigAdapter = async () => new RawConfigAdapter()
+export const getPubSubAdapter = async () => new RawPubSubAdapter()
+
+export let ApiKeys: ApiKeyAdapter
+export let Bots: BotAdapter
+export let Lobbies: LobbyAdapter
+export let Config: RawConfigAdapter
+export let PubSub: RawPubSubAdapter
+
+async function main() {
+	ApiKeys = await getApiKeysAdapter()
+	Bots = await getBotsAdapter()
+	Lobbies = await getLobbiesAdapter()
+	Config = await getConfigAdapter()
+	PubSub = await getPubSubAdapter()
+}
+
+main().catch(console.error)
 
 export { closeDb } from "./src/connect"
