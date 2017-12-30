@@ -36,35 +36,45 @@ export class PlayerAdapter {
 	}
 
 	async insert(data: Player | Array<Player>): Promise<void> {
-		await this.execQuery(db => db.insert(
-				(isArray(data) ? data : [data]).map(it => ({
-					lobby_id: this.lobby.id,
-					...objectToSnakeCase(data)
-				}))
-			)
-			.into(this.dbTable))
+		await this.execQuery(db =>
+			db
+				.insert(
+					(isArray(data) ? data : [data]).map(it => ({
+						lobby_id: this.lobby.id,
+						...objectToSnakeCase(data)
+					}))
+				)
+				.into(this.dbTable)
+		)
 	}
 
-	async update(player: Player, data: UpdatePlayerData): Promise<Player> {
-		const [updatedData] = await this.execQuery(db => db
-			.update(objectToSnakeCase(data))
-			.table(this.dbTable)
-			.where({
-				lobby_id: this.lobby.id,
-				steam_id: player.steamId
-			})
-			.returning(this.dbColumns))
+	async update(
+		player: Player | string,
+		data: UpdatePlayerData
+	): Promise<Player> {
+		const [updatedData] = await this.execQuery(db =>
+			db
+				.update(objectToSnakeCase(data))
+				.table(this.dbTable)
+				.where({
+					lobby_id: this.lobby.id,
+					steam_id: typeof player === "string" ? player : player.steamId
+				})
+				.returning(this.dbColumns)
+		)
 
 		return objectToCamelCase(updatedData)
 	}
 
 	async delete(player: Player): Promise<void> {
-		await this.execQuery(db => db
-			.delete()
-			.from(this.dbTable)
-			.where({
-				lobby_id: this.lobby.id,
-				steam_id: player.steamId
-			}))
+		await this.execQuery(db =>
+			db
+				.delete()
+				.from(this.dbTable)
+				.where({
+					lobby_id: this.lobby.id,
+					steam_id: player.steamId
+				})
+		)
 	}
 }

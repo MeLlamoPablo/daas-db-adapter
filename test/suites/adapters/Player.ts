@@ -46,9 +46,14 @@ export const playerSuite = () =>
 
 				expect((await Players.findAll())[0].isReady).to.be.true
 			})
+			it("should update a player in the lobby by their ID", async () => {
+				await Players.update("4321", { isReady: true })
+
+				expect((await Players.findAll())[1].isReady).to.be.true
+			})
 		})
-		describe("update", () => {
-			it("should update a player in the lobby", async () => {
+		describe("delete", () => {
+			it("should delete a player in the lobby", async () => {
 				const players = await Players.findAll()
 				await Players.delete(players[0])
 

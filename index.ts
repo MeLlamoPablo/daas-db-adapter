@@ -5,9 +5,11 @@ import { ConfigAdapter as RawConfigAdapter } from "./src/adapters/ConfigAdapter"
 import { PubSubAdapter as RawPubSubAdapter } from "./src/adapters/PubSubAdapter"
 import { getAdapter } from "./src/support/getAdapter"
 
-export const getApiKeysAdapter = (t: boolean = false) => getAdapter(ApiKeyAdapter, t)
+export const getApiKeysAdapter = (t: boolean = false) =>
+	getAdapter(ApiKeyAdapter, t)
 export const getBotsAdapter = (t: boolean = false) => getAdapter(BotAdapter, t)
-export const getLobbiesAdapter = (t: boolean = false) => getAdapter(LobbyAdapter, t)
+export const getLobbiesAdapter = (t: boolean = false) =>
+	getAdapter(LobbyAdapter, t)
 export const getConfigAdapter = async () => new RawConfigAdapter()
 export const getPubSubAdapter = async () => new RawPubSubAdapter()
 
