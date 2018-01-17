@@ -4,7 +4,7 @@ import { expect } from "chai"
 import { PubSub } from "../../.."
 
 export const pubSubSuite = () =>
-	describe("getPubSubAdapter", async () => {
+	describe("PubSubAdapter", async () => {
 		let unsubscribe: () => Promise<void>, lastMessage: any
 		it("should notify successfully", async () => {
 			unsubscribe = await PubSub.listen("test", msg => {

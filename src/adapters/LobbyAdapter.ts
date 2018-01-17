@@ -7,6 +7,7 @@ import { JoinType } from "./enums/JoinType"
 import { JoinedData } from "./interfaces/JoinedData"
 import { generatePassword } from "../support/generatePassword"
 import { ExecQueryFunction } from "./types/ExecQueryFunction"
+import { isUndefined } from "util"
 
 export class LobbyConcernAdapter {
 	private readonly execQuery: ExecQueryFunction
@@ -28,7 +29,9 @@ export const LOBBY_COLUMNS = [
 	"server",
 	"game_mode",
 	"radiant_has_first_pick",
-	"status"
+	"status",
+	"match_result",
+	"match_id"
 ]
 
 export class LobbyAdapter extends EntityAdapter<Lobby> {
@@ -55,6 +58,13 @@ export class LobbyAdapter extends EntityAdapter<Lobby> {
 			row.radiantHasFirstPick
 		)
 
+		if (!isUndefined(row.status)) {
+			lobby.status = row.status
+		}
+
+		lobby.matchId = row.matchId || null
+		lobby.matchResult = row.matchResult || null
+
 		const playersJoin = joins.find(it => it.table === "lobby_players")
 
 		if (playersJoin) {
@@ -71,8 +81,12 @@ export class LobbyAdapter extends EntityAdapter<Lobby> {
 		})
 	}
 
-	update(lobby: Lobby, data: UpdateLobbyData): Promise<Lobby> {
-		return super.update(lobby, data)
+	async update(lobby: Lobby, data: UpdateLobbyData): Promise<Lobby> {
+		const players = lobby.players
+		const updatedLobby = await super.update(lobby, data)
+		updatedLobby.players = players
+
+		return updatedLobby
 	}
 
 	concerning(lobby: Lobby): LobbyConcernAdapter {

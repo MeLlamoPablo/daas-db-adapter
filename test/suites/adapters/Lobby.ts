@@ -22,6 +22,8 @@ export const lobbySuite = () =>
 				expect(lobby.server).to.equal(Server.LUXEMBOURG)
 				expect(lobby.gameMode).to.equal(GameMode.CAPTAINS_MODE)
 				expect(lobby.status).to.equal(LobbyStatus.CREATION_PENDING)
+				expect(lobby.matchId).to.be.null
+				expect(lobby.matchResult).to.be.null
 				expect(lobby.radiantHasFirstPick).to.be.true
 			})
 		})
@@ -50,14 +52,29 @@ export const lobbySuite = () =>
 			})
 		})
 		describe("update", async () => {
-			it("should update a bot", async () => {
+			it("should update a lobby", async () => {
 				const lobby = await Lobbies.findById(1)
 				expect(lobby).not.to.be.null
 				const updatedLobby = await Lobbies.update(lobby!, {
-					password: "newpass"
+					password: "newpass",
+					matchId: "1234",
+					status: LobbyStatus.OPEN
 				})
 				expect(updatedLobby.password).to.equal("newpass")
+				expect(updatedLobby.matchId).to.equal("1234")
+				expect(updatedLobby.status).to.equal(LobbyStatus.OPEN)
 				expect((await Lobbies.findById(1))!.password).to.equal("newpass")
+			})
+			it("should not lose player information", async () => {
+				const lobby = await Lobbies.findById(1)
+				expect(lobby).not.to.be.null
+				;(lobby as any).players = ["waddup"]
+				const updatedLobby = await Lobbies.update(lobby!, {
+					password: "newpass2"
+				})
+				expect(updatedLobby.password).to.equal("newpass2")
+				expect(updatedLobby.players).to.deep.equal(["waddup"])
+				expect((await Lobbies.findById(1))!.password).to.equal("newpass2")
 			})
 		})
 		describe("delete", async () => {

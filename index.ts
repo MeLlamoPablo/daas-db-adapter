@@ -11,20 +11,18 @@ export const getBotsAdapter = (t: boolean = false) => getAdapter(BotAdapter, t)
 export const getLobbiesAdapter = (t: boolean = false) =>
 	getAdapter(LobbyAdapter, t)
 export const getConfigAdapter = async () => new RawConfigAdapter()
-export const getPubSubAdapter = async () => new RawPubSubAdapter()
 
 export let ApiKeys: ApiKeyAdapter
 export let Bots: BotAdapter
 export let Lobbies: LobbyAdapter
 export let Config: RawConfigAdapter
-export let PubSub: RawPubSubAdapter
+export const PubSub = new RawPubSubAdapter()
 
 async function main() {
 	ApiKeys = await getApiKeysAdapter()
 	Bots = await getBotsAdapter()
 	Lobbies = await getLobbiesAdapter()
 	Config = await getConfigAdapter()
-	PubSub = await getPubSubAdapter()
 }
 
 main().catch(console.error)

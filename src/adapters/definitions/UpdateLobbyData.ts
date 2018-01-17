@@ -1,4 +1,4 @@
-import { GameMode, LobbyStatus, Server } from "@daas/model"
+import { GameMode, LobbyStatus, MatchResult, Server } from "@daas/model"
 
 export interface UpdateLobbyData {
 	name?: string
@@ -7,4 +7,6 @@ export interface UpdateLobbyData {
 	gameMode?: GameMode
 	radiantHasFirstPick?: boolean
 	status?: LobbyStatus
+	matchId?: string | null
+	matchResult?: MatchResult | null
 }

@@ -41,7 +41,7 @@ export class PlayerAdapter {
 				.insert(
 					(isArray(data) ? data : [data]).map(it => ({
 						lobby_id: this.lobby.id,
-						...objectToSnakeCase(data)
+						...objectToSnakeCase(it)
 					}))
 				)
 				.into(this.dbTable)
