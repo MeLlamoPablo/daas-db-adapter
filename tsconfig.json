@@ -1,7 +1,8 @@
 {
 	"files": [
 		"index.ts",
-		"src/migrations/index.ts"
+		"src/migrations/index.ts",
+		"src/migrations/migrate.ts"
 	],
 	"compilerOptions": {
 		"strict": true,

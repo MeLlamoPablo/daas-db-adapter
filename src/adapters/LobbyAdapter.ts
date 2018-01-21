@@ -1,4 +1,4 @@
-import { Lobby } from "@daas/model"
+import { Bot, Lobby } from "@daas/model"
 import { EntityAdapter } from "./EntityAdapter"
 import { CreateLobbyData } from "./definitions/CreateLobbyData"
 import { UpdateLobbyData } from "./definitions/UpdateLobbyData"
@@ -8,6 +8,7 @@ import { JoinedData } from "./interfaces/JoinedData"
 import { generatePassword } from "../support/generatePassword"
 import { ExecQueryFunction } from "./types/ExecQueryFunction"
 import { isUndefined } from "util"
+import { BOT_COLUMS } from "./BotAdapter"
 
 export class LobbyConcernAdapter {
 	private readonly execQuery: ExecQueryFunction
@@ -31,7 +32,8 @@ export const LOBBY_COLUMNS = [
 	"radiant_has_first_pick",
 	"status",
 	"match_result",
-	"match_id"
+	"match_id",
+	"bot_id"
 ]
 
 export class LobbyAdapter extends EntityAdapter<Lobby> {
@@ -45,6 +47,14 @@ export class LobbyAdapter extends EntityAdapter<Lobby> {
 			targetTable: "lobby_players",
 			targetColumn: "lobby_id",
 			targetTableColumns: PLAYER_COLUMNS
+		},
+		{
+			type: JoinType.LEFT,
+			originTable: this.dbTable,
+			originColumn: "bot_id",
+			targetTable: "bots",
+			targetColumn: "id",
+			targetTableColumns: BOT_COLUMS
 		}
 	]
 
@@ -71,6 +81,21 @@ export class LobbyAdapter extends EntityAdapter<Lobby> {
 			lobby.players = playersJoin.rows
 		}
 
+		const botsJoin = joins.find(it => it.table === "bots")
+
+		if (botsJoin && botsJoin.rows.length > 0) {
+			const botRow = botsJoin.rows[0]
+
+			lobby.bot = new Bot(
+				row.botId,
+				botRow.username,
+				botRow.password,
+				botRow.sentryFile
+			)
+		} else {
+			lobby.bot = null
+		}
+
 		return lobby
 	}
 
@@ -83,7 +108,17 @@ export class LobbyAdapter extends EntityAdapter<Lobby> {
 
 	async update(lobby: Lobby, data: UpdateLobbyData): Promise<Lobby> {
 		const players = lobby.players
-		const updatedLobby = await super.update(lobby, data)
+		const updatedLobby = await super.update(lobby, {
+			name: data.name,
+			password: data.password,
+			server: data.server,
+			gameMode: data.gameMode,
+			radiantHasFirstPick: data.radiantHasFirstPick,
+			status: data.status,
+			botId: data.bot ? data.bot.id : null,
+			matchId: data.matchId,
+			matchResult: data.matchResult
+		})
 		updatedLobby.players = players
 
 		return updatedLobby

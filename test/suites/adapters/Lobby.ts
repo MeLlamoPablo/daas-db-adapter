@@ -1,8 +1,9 @@
 import "mocha"
 import { expect } from "chai"
 
-import { GameMode, LobbyStatus, Lobby, Server } from "@daas/model"
-import { Lobbies } from "../../.."
+import { Bot, GameMode, LobbyStatus, Lobby, Server } from "@daas/model"
+import { Bots, Lobbies } from "../../.."
+import { testBotProperties } from "./Bot"
 
 export const lobbySuite = () =>
 	describe("LobbyAdapter", async () => {
@@ -25,6 +26,7 @@ export const lobbySuite = () =>
 				expect(lobby.matchId).to.be.null
 				expect(lobby.matchResult).to.be.null
 				expect(lobby.radiantHasFirstPick).to.be.true
+				expect(lobby.bot).to.be.null
 			})
 		})
 		describe("findAll", () => {
@@ -75,6 +77,27 @@ export const lobbySuite = () =>
 				expect(updatedLobby.password).to.equal("newpass2")
 				expect(updatedLobby.players).to.deep.equal(["waddup"])
 				expect((await Lobbies.findById(1))!.password).to.equal("newpass2")
+			})
+			it("should bring the bot information after linking a bot", async () => {
+				let [lobby, bot] = await Promise.all([
+					Lobbies.insert({
+						name: "Test lobby 3",
+						server: Server.LUXEMBOURG,
+						gameMode: GameMode.CAPTAINS_MODE,
+						radiantHasFirstPick: true
+					}),
+					Bots.insert({
+						username: "foo",
+						password: "bar",
+						sentryFile: null
+					})
+				])
+
+				await Lobbies.update(lobby, { bot })
+				lobby = (await Lobbies.findById(lobby.id))!
+
+				expect(lobby.bot).to.be.an.instanceOf(Bot)
+				testBotProperties(lobby.bot!)
 			})
 		})
 		describe("delete", async () => {

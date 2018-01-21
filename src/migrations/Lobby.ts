@@ -13,6 +13,7 @@ export const migrateLobbies = async () =>
 		table.boolean("radiant_has_first_pick").notNullable()
 		table.string("match_id")
 		table.integer("match_result")
+		table.integer("bot_id").references("id").inTable("bots")
 		table
 			.integer("status")
 			.notNullable()

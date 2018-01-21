@@ -5,6 +5,13 @@ import { Bot, BotStatus } from "@daas/model"
 import { Bots } from "../../.."
 import { assertRejects } from "../../util/assertRejects"
 
+export function testBotProperties(bot: Bot) {
+	expect(bot).to.be.instanceof(Bot)
+	expect(bot.id).to.be.at.least(1)
+	expect(bot.username).to.be.a("string")
+	expect(bot.password).to.be.a("string")
+}
+
 export const botSuite = () =>
 	describe("BotAdapter", async () => {
 		describe("insert", () => {
@@ -15,13 +22,13 @@ export const botSuite = () =>
 					sentryFile: null
 				})
 
-				expect(bot).to.be.instanceof(Bot)
+				testBotProperties(bot)
+
 				expect(bot.id).to.equal(1)
 				expect(bot.username).to.equal("hello")
 				expect(bot.password).to.equal("world")
 				expect(bot.sentryFile).to.be.null
 				expect(bot.status).to.equal(BotStatus.OFFLINE)
-				expect(bot.sentryFile).to.be.null
 				expect(bot.disabledUntil).to.be.null
 			})
 			it("shouldn't insert a duplicate bot", async () => {

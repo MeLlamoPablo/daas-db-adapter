@@ -11,6 +11,9 @@
 		"build": "tsc",
 		"reformat": "prettier --write \"**/*.ts\""
 	},
+	"bin": {
+		"daas-migrate": "./src/migrations/migrate.js"
+	},
 	"author": "Pablo Rodríguez <pabloviolin8@gmail.com>",
 	"license": "MIT",
 	"devDependencies": {
