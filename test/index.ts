@@ -9,6 +9,8 @@ import { apiKeySuite } from "./suites/adapters/ApiKey"
 import { pubSubSuite } from "./suites/adapters/PubSub"
 import { configSuite } from "./suites/adapters/Config"
 import { transactionSuite } from "./suites/transactions"
+import { machineSuite } from "./suites/adapters/Machine"
+import { triggerSuite } from "./suites/triggers"
 
 before(() => {
 	// Open the connection inside the test suite
@@ -32,11 +34,13 @@ describe("Migrations Up", () => {
 describe("Database Adapters", () => {
 	botSuite()
 	lobbySuite()
+	machineSuite()
 	playerSuite()
 	apiKeySuite()
 	configSuite()
 	pubSubSuite()
 	transactionSuite()
+	triggerSuite()
 })
 
 describe("Migrations Down", () => {

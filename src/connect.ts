@@ -1,5 +1,4 @@
 import * as Knex from "knex"
-import { Client } from "pg"
 
 let db: Knex | null = null
 
@@ -30,8 +29,9 @@ export function getDb(): Knex {
 	return db
 }
 
+// any because @typings/pg was causing trouble
 export const getPg = () =>
-	getDb().client.acquireRawConnection() as Promise<Client>
+	getDb().client.acquireRawConnection() as Promise<any>
 
 // async/await is needed here to convert Bluebird to Promise
 export const closeDb = async () => await getDb().destroy()

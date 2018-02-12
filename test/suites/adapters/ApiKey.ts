@@ -67,6 +67,9 @@ export const apiKeySuite = () =>
 				// Make sure that the change is on DB and not just on memory
 				expect((await ApiKeys.findById(1))!.label).to.equal("newlabel")
 			})
+			it("should do nothing with an empty diff", async () => {
+				await ApiKeys.update(key, {})
+			})
 		})
 		describe("delete", async () => {
 			it("should delete a key", async () => {

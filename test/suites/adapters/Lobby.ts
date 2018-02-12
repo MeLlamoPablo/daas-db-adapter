@@ -1,9 +1,9 @@
 import "mocha"
 import { expect } from "chai"
 
-import { Bot, GameMode, LobbyStatus, Lobby, Server } from "@daas/model"
-import { Bots, Lobbies } from "../../.."
-import { testBotProperties } from "./Bot"
+import { GameMode, LobbyStatus, Lobby, Server } from "@daas/model"
+import { Lobbies, Machines, Bots } from "../../.."
+import { testMachineProperties } from "./Machine"
 
 export const lobbySuite = () =>
 	describe("LobbyAdapter", async () => {
@@ -26,7 +26,7 @@ export const lobbySuite = () =>
 				expect(lobby.matchId).to.be.null
 				expect(lobby.matchResult).to.be.null
 				expect(lobby.radiantHasFirstPick).to.be.true
-				expect(lobby.bot).to.be.null
+				expect(lobby.machine).to.be.null
 			})
 		})
 		describe("findAll", () => {
@@ -43,6 +43,16 @@ export const lobbySuite = () =>
 				expect(lobbies)
 					.to.be.an("array")
 					.that.has.length(2)
+			})
+		})
+		describe("findAllWithoutMachine", () => {
+			it("should return all lobbies without machine", async () => {
+				const lobbies = await Lobbies.findAllWithoutMachine()
+
+				expect(lobbies)
+					.to.be.an("array")
+					.that.has.length(2)
+				lobbies.forEach(lobby => expect(lobby.machine).to.be.null)
 			})
 		})
 		describe("findById", async () => {
@@ -78,26 +88,29 @@ export const lobbySuite = () =>
 				expect(updatedLobby.players).to.deep.equal(["waddup"])
 				expect((await Lobbies.findById(1))!.password).to.equal("newpass2")
 			})
-			it("should bring the bot information after linking a bot", async () => {
-				let [lobby, bot] = await Promise.all([
+			it("should bring the machine information after linking a machine", async () => {
+				let [lobby, machine] = await Promise.all([
 					Lobbies.insert({
 						name: "Test lobby 3",
 						server: Server.LUXEMBOURG,
 						gameMode: GameMode.CAPTAINS_MODE,
 						radiantHasFirstPick: true
 					}),
-					Bots.insert({
-						username: "foo",
-						password: "bar",
-						sentryFile: null
-					})
+					(async () =>
+						Machines.insert({
+							bot: await Bots.insert({
+								username: "lobbytest123",
+								password: "lobbytest123",
+								sentryFile: null
+							})
+						}))()
 				])
 
-				await Lobbies.update(lobby, { bot })
+				await Lobbies.update(lobby, { machine })
 				lobby = (await Lobbies.findById(lobby.id))!
 
-				expect(lobby.bot).to.be.an.instanceOf(Bot)
-				testBotProperties(lobby.bot!)
+				expect(lobby.machine).not.to.be.null
+				testMachineProperties(lobby.machine!)
 			})
 		})
 		describe("delete", async () => {

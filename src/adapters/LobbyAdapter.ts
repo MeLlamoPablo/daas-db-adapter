@@ -1,4 +1,5 @@
-import { Bot, Lobby } from "@daas/model"
+import { Bot, Lobby, Machine } from "@daas/model"
+import { isUndefined } from "util"
 import { EntityAdapter } from "./EntityAdapter"
 import { CreateLobbyData } from "./definitions/CreateLobbyData"
 import { UpdateLobbyData } from "./definitions/UpdateLobbyData"
@@ -7,8 +8,8 @@ import { JoinType } from "./enums/JoinType"
 import { JoinedData } from "./interfaces/JoinedData"
 import { generatePassword } from "../support/generatePassword"
 import { ExecQueryFunction } from "./types/ExecQueryFunction"
-import { isUndefined } from "util"
 import { BOT_COLUMS } from "./BotAdapter"
+import { MACHINE_COLUMNS } from "./MachineAdapter"
 
 export class LobbyConcernAdapter {
 	private readonly execQuery: ExecQueryFunction
@@ -33,12 +34,13 @@ export const LOBBY_COLUMNS = [
 	"status",
 	"match_result",
 	"match_id",
-	"bot_id"
+	"machine_id"
 ]
 
 export class LobbyAdapter extends EntityAdapter<Lobby> {
 	protected readonly dbTable: string = "lobbies"
 	protected readonly dbColumns: Array<string> = LOBBY_COLUMNS
+	// lobby_players <-- lobbies --> machines --> bots
 	protected readonly joins = [
 		{
 			type: JoinType.LEFT,
@@ -51,6 +53,14 @@ export class LobbyAdapter extends EntityAdapter<Lobby> {
 		{
 			type: JoinType.LEFT,
 			originTable: this.dbTable,
+			originColumn: "machine_id",
+			targetTable: "machines",
+			targetColumn: "id",
+			targetTableColumns: MACHINE_COLUMNS
+		},
+		{
+			type: JoinType.LEFT,
+			originTable: "machines",
 			originColumn: "bot_id",
 			targetTable: "bots",
 			targetColumn: "id",
@@ -81,22 +91,47 @@ export class LobbyAdapter extends EntityAdapter<Lobby> {
 			lobby.players = playersJoin.rows
 		}
 
+		const machinesJoin = joins.find(it => it.table === "machines")
 		const botsJoin = joins.find(it => it.table === "bots")
 
-		if (botsJoin && botsJoin.rows.length > 0) {
+		if (
+			botsJoin &&
+			botsJoin.rows.length > 0 &&
+			machinesJoin &&
+			machinesJoin.rows.length > 0
+		) {
+			const machineRow = machinesJoin.rows[0]
 			const botRow = botsJoin.rows[0]
 
-			lobby.bot = new Bot(
-				row.botId,
-				botRow.username,
-				botRow.password,
-				botRow.sentryFile
+			lobby.machine = new Machine(
+				row.machineId,
+				machineRow.startedAt,
+				new Bot(
+					machineRow.botId,
+					botRow.username,
+					botRow.password,
+					botRow.sentryFile
+				),
+				machineRow.isTerminated
 			)
 		} else {
-			lobby.bot = null
+			lobby.machine = null
 		}
 
 		return lobby
+	}
+
+	async findAllWithoutMachine(): Promise<Array<Lobby>> {
+		const rows = await this.execQuery(db =>
+			db
+				.select("id")
+				.from(this.dbTable)
+				.whereNull("machine_id")
+		)
+
+		return await Promise.all(
+			rows.map(it => super.findById(it.id) as Promise<Lobby>)
+		)
 	}
 
 	insert(data: CreateLobbyData): Promise<Lobby> {
@@ -115,7 +150,7 @@ export class LobbyAdapter extends EntityAdapter<Lobby> {
 			gameMode: data.gameMode,
 			radiantHasFirstPick: data.radiantHasFirstPick,
 			status: data.status,
-			botId: data.bot ? data.bot.id : null,
+			machineId: data.machine ? data.machine.id : null,
 			matchId: data.matchId,
 			matchResult: data.matchResult
 		})

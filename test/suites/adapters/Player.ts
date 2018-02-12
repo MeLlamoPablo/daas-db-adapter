@@ -6,7 +6,8 @@ import { PlayerAdapter } from "../../../src/adapters/PlayerAdapter"
 
 export const playerSuite = () =>
 	describe("PlayerAdapter", async () => {
-		const allPlayers = async () => (await Players.findAll()).sort((a, b) => +a.steamId - +b.steamId)
+		const allPlayers = async () =>
+			(await Players.findAll()).sort((a, b) => +a.steamId - +b.steamId)
 
 		let Players: PlayerAdapter
 		before(async () => {

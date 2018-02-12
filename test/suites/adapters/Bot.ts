@@ -77,6 +77,22 @@ export const botSuite = () =>
 				expect(bots[0].username).to.equal("hello2")
 			})
 		})
+		describe("findAllByStatus", () => {
+			before(async () => {
+				await Bots.update((await Bots.findById(3))!, { status: BotStatus.IDLE })
+			})
+			it("should return all offline bots", async () => {
+				const bots = await Bots.findAllByStatus(BotStatus.OFFLINE)
+				expect(bots).to.have.length(2)
+				expect(bots[0].username).to.equal("hello")
+				expect(bots[1].username).to.equal("hello3")
+			})
+			it("should return all idle bots", async () => {
+				const bots = await Bots.findAllByStatus(BotStatus.IDLE)
+				expect(bots).to.have.length(1)
+				expect(bots[0].username).to.equal("hello2")
+			})
+		})
 		describe("findById", async () => {
 			it("should find a specific bot", async () => {
 				const bot = await Bots.findById(1)

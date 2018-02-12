@@ -1,6 +1,6 @@
 {
 	"name": "@daas/db-adapter",
-	"version": "0.0.1",
+	"version": "0.0.1-dev.4",
 	"description": "A Database abstraction layer for DaaS",
 	"main": "src/index.ts",
 	"scripts": {
@@ -9,6 +9,7 @@
 		"test": "npm run test:coverage",
 		"migrate": "ts-node src/migrations/migrate.ts",
 		"build": "tsc",
+		"prepack": "npm run build",
 		"reformat": "prettier --write \"**/*.ts\""
 	},
 	"bin": {
@@ -18,10 +19,8 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@types/chai": "^4.0.5",
-		"@types/knex": "0.0.65",
 		"@types/mocha": "^2.2.44",
 		"@types/node": "^8.0.53",
-		"@types/pg": "^7.4.1",
 		"chai": "^4.1.2",
 		"mocha": "^4.0.1",
 		"nyc": "^11.3.0",
@@ -30,9 +29,10 @@
 		"typescript": "^2.6.1"
 	},
 	"dependencies": {
-		"@daas/model": "file:../daas-model",
+		"@daas/model": "0.0.1-dev.1",
 		"@types/bcrypt": "^1.0.0",
 		"@types/lodash": "^4.14.91",
+		"@types/knex": "0.0.65",
 		"bcrypt": "^1.0.3",
 		"knex": "^0.14.1",
 		"lodash": "^4.17.4",
