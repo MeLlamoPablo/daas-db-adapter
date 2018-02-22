@@ -59,7 +59,7 @@ export class MachineAdapter extends EntityAdapter<Machine> {
 						.from("lobbies")
 						.whereNotNull("machine_id")
 				)
-				.andWhereNot({ is_terminated: null })
+				.andWhere({ is_terminated: false })
 		)
 
 		return await Promise.all(
