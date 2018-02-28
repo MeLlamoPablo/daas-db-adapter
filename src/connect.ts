@@ -30,8 +30,7 @@ export function getDb(): Knex {
 }
 
 // any because @typings/pg was causing trouble
-export const getPg = () =>
-	getDb().client.acquireRawConnection() as Promise<any>
+export const getPg = () => getDb().client.acquireRawConnection() as Promise<any>
 
 // async/await is needed here to convert Bluebird to Promise
 export const closeDb = async () => await getDb().destroy()

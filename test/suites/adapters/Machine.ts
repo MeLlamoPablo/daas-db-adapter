@@ -79,6 +79,18 @@ export const machineSuite = () => {
 				expect(machines[1].bot.username).to.equal("machinetest2")
 			})
 		})
+		describe("Lobbies#findByMachine", () => {
+			it("should find a lobby by its machine", async () => {
+				const machine = await Machines.findById(3)
+				expect(machine).not.to.be.null
+
+				const lobby = await Lobbies.findByMachine(machine!)
+				expect(lobby).not.to.be.null
+
+				expect(lobby!.id).to.equal(2)
+				expect(lobby!.machine).to.deep.equal(machine)
+			})
+		})
 		describe("findById", () => {
 			it("should find a specific machine", async () => {
 				const machine = (await Machines.findById(3))!

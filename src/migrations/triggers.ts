@@ -11,7 +11,7 @@ export const migrateTriggers = async () =>
 	$$ LANGUAGE plpgsql;
 	
 	CREATE TRIGGER lobby_created_trigger
-	  AFTER UPDATE
+	  AFTER INSERT
 	  ON lobbies
 	  FOR EACH STATEMENT
 	  EXECUTE PROCEDURE lobby_created_trigger();

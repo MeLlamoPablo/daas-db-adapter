@@ -1,4 +1,4 @@
-import { Bot, Lobby, Machine } from "@daas/model"
+import { Bot, Lobby, LobbyStatus, Machine } from "@daas/model"
 import { isUndefined } from "util"
 import { EntityAdapter } from "./EntityAdapter"
 import { CreateLobbyData } from "./definitions/CreateLobbyData"
@@ -121,12 +121,19 @@ export class LobbyAdapter extends EntityAdapter<Lobby> {
 		return lobby
 	}
 
+	findByMachine(machine: Machine): Promise<Lobby | null> {
+		return this.findByCondition({ machine_id: machine.id })
+	}
+
 	async findAllWithoutMachine(): Promise<Array<Lobby>> {
 		const rows = await this.execQuery(db =>
 			db
 				.select("id")
 				.from(this.dbTable)
-				.whereNull("machine_id")
+				.where({
+					machine_id: null,
+					status: LobbyStatus.CREATION_PENDING
+				})
 		)
 
 		return await Promise.all(

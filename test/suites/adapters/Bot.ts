@@ -109,7 +109,8 @@ export const botSuite = () =>
 				expect(bot).not.to.be.null
 				const updatedBot = await Bots.update(bot!, {
 					password: "newpass",
-					status: BotStatus.IN_LOBBY
+					status: BotStatus.IN_LOBBY,
+					disabledUntil: new Date(Date.now() + 10000)
 				})
 				expect(updatedBot.password).to.equal("newpass")
 				// Make sure that the change is on DB and not just on memory

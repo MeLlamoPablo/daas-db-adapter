@@ -11,6 +11,7 @@ import { configSuite } from "./suites/adapters/Config"
 import { transactionSuite } from "./suites/transactions"
 import { machineSuite } from "./suites/adapters/Machine"
 import { triggerSuite } from "./suites/triggers"
+import { webHookSuite } from "./suites/adapters/WebHook"
 
 before(() => {
 	// Open the connection inside the test suite
@@ -37,6 +38,7 @@ describe("Database Adapters", () => {
 	machineSuite()
 	playerSuite()
 	apiKeySuite()
+	webHookSuite()
 	configSuite()
 	pubSubSuite()
 	transactionSuite()
