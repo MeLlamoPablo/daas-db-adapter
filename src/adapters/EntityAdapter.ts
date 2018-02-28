@@ -21,7 +21,7 @@ export abstract class EntityAdapter<T extends Entity> {
 		this.db = db
 	}
 
-	private get allCurrentTableColumns() {
+	protected get allCurrentTableColumns() {
 		return this.dbColumns.concat("id")
 	}
 

@@ -14,7 +14,8 @@ export const getMachinesAdapter = (t: boolean = false) =>
 	getAdapter(MachineAdapter, t)
 export const getLobbiesAdapter = (t: boolean = false) =>
 	getAdapter(LobbyAdapter, t)
-export const getWebHookAdapter = (t: boolean = false) => getAdapter(WebHookAdapter, t)
+export const getWebHookAdapter = (t: boolean = false) =>
+	getAdapter(WebHookAdapter, t)
 export const getConfigAdapter = async () => new RawConfigAdapter()
 
 export let ApiKeys: ApiKeyAdapter

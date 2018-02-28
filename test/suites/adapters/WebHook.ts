@@ -76,6 +76,19 @@ export const webHookSuite = () =>
 				expect(await WebHooks.findById(100)).to.be.null
 			})
 		})
+		describe("findByEventType", async () => {
+			it("should find all hooks by type", async () => {
+				const whs = await WebHooks.findAllByEventType(
+					WebHookEventType.PLAYER_READY_STATUS_UPDATE
+				)
+				expect(whs)
+					.to.be.an("array")
+					.that.has.length(1)
+				whs.forEach(testWebHookProperties)
+
+				expect(whs[0].url).to.equal("https://www.test3.com")
+			})
+		})
 		describe("update", async () => {
 			it("should update a hook", async () => {
 				const wh = await WebHooks.findById(1)
