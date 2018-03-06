@@ -25,7 +25,8 @@ export const transactionSuite = () =>
 				permissions: {
 					bots: ApiAccessLevel.WRITE,
 					apiKeys: ApiAccessLevel.WRITE,
-					lobbies: ApiAccessLevel.WRITE
+					lobbies: ApiAccessLevel.WRITE,
+					webhooks: ApiAccessLevel.WRITE
 				}
 			})
 

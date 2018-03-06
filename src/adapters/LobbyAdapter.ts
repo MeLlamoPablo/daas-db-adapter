@@ -149,24 +149,50 @@ export class LobbyAdapter extends EntityAdapter<Lobby> {
 	}
 
 	async update(lobby: Lobby, data: UpdateLobbyData): Promise<Lobby> {
-		const players = lobby.players
-		const updatedLobby = await super.update(lobby, {
-			name: data.name,
-			password: data.password,
-			server: data.server,
-			gameMode: data.gameMode,
-			radiantHasFirstPick: data.radiantHasFirstPick,
-			status: data.status,
-			machineId: data.machine ? data.machine.id : null,
-			matchId: data.matchId,
-			matchResult: data.matchResult
-		})
-		updatedLobby.players = players
+		const diff = {} as any
 
-		return updatedLobby
+		if (data.name) {
+			diff.name = data.name
+		}
+
+		if (data.password) {
+			diff.password = data.password
+		}
+
+		if (data.server) {
+			diff.server = data.server
+		}
+
+		if (data.gameMode) {
+			diff.gameMode = data.gameMode
+		}
+
+		if (data.radiantHasFirstPick) {
+			diff.radiantHasFirstPick = data.radiantHasFirstPick
+		}
+
+		if (data.status) {
+			diff.status = data.status
+		}
+
+		if (data.machine) {
+			diff.machineId = data.machine.id
+		}
+
+		if (data.matchId) {
+			diff.matchId = data.matchId
+		}
+
+		if (data.matchResult) {
+			diff.matchResult = data.matchResult
+		}
+
+		await super.update(lobby, diff)
+		return (await this.findById(lobby.id))!
 	}
 
 	concerning(lobby: Lobby): LobbyConcernAdapter {
 		return new LobbyConcernAdapter(super.execQuery.bind(this), lobby)
 	}
 }
+

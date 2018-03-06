@@ -77,17 +77,6 @@ export const lobbySuite = () =>
 				expect(updatedLobby.status).to.equal(LobbyStatus.OPEN)
 				expect((await Lobbies.findById(1))!.password).to.equal("newpass")
 			})
-			it("should not lose player information", async () => {
-				const lobby = await Lobbies.findById(1)
-				expect(lobby).not.to.be.null
-				;(lobby as any).players = ["waddup"]
-				const updatedLobby = await Lobbies.update(lobby!, {
-					password: "newpass2"
-				})
-				expect(updatedLobby.password).to.equal("newpass2")
-				expect(updatedLobby.players).to.deep.equal(["waddup"])
-				expect((await Lobbies.findById(1))!.password).to.equal("newpass2")
-			})
 			it("should bring the machine information after linking a machine", async () => {
 				let [lobby, machine] = await Promise.all([
 					Lobbies.insert({
