@@ -1,4 +1,4 @@
-import { ApiKey } from "@daas/model"
+import { ApiKey , PlainTextApiKey, HashedApiKey } from "@daas/model"
 import { compare, hash } from "bcrypt"
 import { generateApiKey } from "../support/generateApiKey"
 import { EntityAdapter } from "./EntityAdapter"
@@ -24,14 +24,25 @@ export class ApiKeyAdapter extends EntityAdapter<ApiKey> {
 		joins?: Array<JoinedData>,
 		plainTextKey?: string
 	): ApiKey {
-		return new ApiKey(
-			row.id,
-			row.label,
-			plainTextKey || row.value,
-			row.fragment,
-			row.permissions,
-			row.lastUsed
-		)
+		if (plainTextKey) {
+			return new PlainTextApiKey(
+				row.id,
+				row.label,
+				row.fragment,
+				row.permissions,
+				row.lastUsed,
+				plainTextKey,
+			)
+		} else {
+			return new HashedApiKey(
+				row.id,
+				row.label,
+				row.fragment,
+				row.permissions,
+				row.lastUsed,
+				row.value
+			)
+		}
 	}
 
 	findByFragment(fragment: string): Promise<ApiKey | null> {
@@ -40,16 +51,16 @@ export class ApiKeyAdapter extends EntityAdapter<ApiKey> {
 
 	async findByPlainTextKey(plainText: string): Promise<ApiKey | null> {
 		const fragment = plainText.substr(0, 5)
-		const key = await super.findByCondition({ fragment })
+		const key = await super.findByCondition({ fragment }) as HashedApiKey
 
 		if (key && (await this.verifyMatches(key, plainText))) {
-			return key
+			return key.toApiKey()
 		} else {
 			return null
 		}
 	}
 
-	async insert(data: CreateApiKeyData): Promise<ApiKey> {
+	async insert(data: CreateApiKeyData): Promise<PlainTextApiKey> {
 		const plainTextKey = generateApiKey()
 		return await super.insert(
 			{
@@ -59,7 +70,7 @@ export class ApiKeyAdapter extends EntityAdapter<ApiKey> {
 				lastUsed: new Date()
 			},
 			plainTextKey
-		)
+		) as PlainTextApiKey
 	}
 
 	update(key: ApiKey, data: UpdateApiKeyData): Promise<ApiKey> {
@@ -79,9 +90,9 @@ export class ApiKeyAdapter extends EntityAdapter<ApiKey> {
 	 * @returns True if they match, false otherwise
 	 */
 	private async verifyMatches(
-		key: ApiKey,
+		key: HashedApiKey,
 		keyToCompare: string
 	): Promise<boolean> {
-		return await compare(keyToCompare, key.value)
+		return await compare(keyToCompare, key.hashedValue)
 	}
 }

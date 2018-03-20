@@ -1,14 +1,15 @@
 import "mocha"
 import { expect } from "chai"
 
-import { ApiKey, ApiAccessLevel } from "@daas/model"
+import {
+	ApiKey , ApiAccessLevel , 	PlainTextApiKey
+} from "@daas/model"
 import { ApiKeys } from "../../../"
 
 function testApiKeyProperties(key: ApiKey) {
 	expect(key.id)
 		.to.be.a("number")
 		.that.is.at.least(1)
-	expect(key.value).to.be.a("string")
 	expect(key.fragment)
 		.to.be.a("string")
 		.that.has.length(5)
@@ -33,6 +34,7 @@ export const apiKeySuite = () =>
 				})
 
 				testApiKeyProperties(key)
+				expect(key).to.be.an.instanceof(PlainTextApiKey)
 				expect(key.fragment).to.equal(key.value.substr(0, 5))
 			})
 		})
